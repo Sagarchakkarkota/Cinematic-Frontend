@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Utsavam Brand Colors - Royal, Cultural-Modern, Cinematic */
+  --color-primary: #0d4f3c;        /* Deep peacock/emerald green base */
+  --color-secondary: #c9a961;      /* Antique gold accents */
+  --color-tertiary: #1a6b55;       /* Medium emerald for depth */
+  --color-background: #0a0f0d;     /* Dark cinematic background (not pure black) */
+  --color-foreground: #f5f1e8;     /* Soft ivory/sand (not pure white) */
+  --color-muted: #2a3a35;          /* Muted dark for subtle elements */
+  --color-accent: #d4af37;         /* Brighter gold for highlights */
+  --color-border: #1f2e29;          /* Subtle borders */
+  --color-glass: rgba(13, 79, 60, 0.1); /* Glass morphism effect */
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --font-serif: 'Playfair Display', 'Georgia', serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-tertiary);
+}
+
+/* Glass morphism utility */
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--color-border);
+}
+
+/* Premium text gradient */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Smooth transitions */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
