@@ -875,14 +875,19 @@ h2 em {
   min-height: 110px;
   border-bottom: 1px solid var(--line);
   transition:
-    color 0.2s ease-out,
-    transform 0.2s ease-out;
-  will-change: transform, color;
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+  will-change: transform, background-color, color;
   transform: translate3d(0, 0, 0);
 }
 .service-row:hover {
-  color: var(--warm);
-  transform: translate3d(12px, 0, 0);
+  background: rgba(23, 23, 20, 0.92);
+  color: #f2efe8;
+  transform: translate3d(0, 0, 0);
+}
+.service-row:hover span {
+  color: rgba(242, 239, 232, 0.8);
 }
 .service-row span {
   font-size: 10px;
