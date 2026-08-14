@@ -14,6 +14,9 @@ export function Button({
   className = '',
   ...props
 }: ButtonProps) {
+  // ButtonHTMLAttributes and Framer Motion use different onDrag signatures.
+  // Keep the public API native while allowing motion props internally.
+  const MotionButton = motion.button as any
   const baseStyles = 'font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed'
   
   const variants = {
@@ -29,13 +32,13 @@ export function Button({
   }
 
   return (
-    <motion.button
+    <MotionButton
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
       {children}
-    </motion.button>
+    </MotionButton>
   )
 }

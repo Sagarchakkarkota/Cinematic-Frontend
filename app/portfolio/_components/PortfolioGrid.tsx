@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { usePortfolio, type PortfolioItem } from "../_hooks/usePortfolio";
 import { Modal } from "@/shared/components/Modal";
+import { CardSkeleton } from "@/shared/components/Skeleton";
 
 export function PortfolioGrid() {
   const { data: items, isLoading } = usePortfolio();
@@ -13,12 +14,7 @@ export function PortfolioGrid() {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="bg-muted rounded-lg animate-pulse h-[380px]"
-          />
-        ))}
+        {[...Array(6)].map((_, i) => <CardSkeleton key={i} className="portfolio-skeleton" />)}
       </div>
     );
   }

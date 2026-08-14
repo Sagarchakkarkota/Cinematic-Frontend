@@ -1,71 +1,24 @@
 'use client'
 
+import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { usePortfolio } from '../portfolio/_hooks/usePortfolio'
+import { defaultHomeContent, useHomeContent } from '../_hooks/useHomeContent'
 
-const features = [
-  {
-    title: 'Cinematic Excellence',
-    description: 'Every frame tells a story, crafted with the precision of a master filmmaker.',
-    icon: '🎬',
-  },
-  {
-    title: 'Cultural Authenticity',
-    description: 'Honoring traditions while creating timeless memories that resonate across generations.',
-    icon: '🕉️',
-  },
-  {
-    title: 'Premium Quality',
-    description: '4K resolution, professional color grading, and studio-quality audio production.',
-    icon: '✨',
-  },
-  {
-    title: 'Personal Touch',
-    description: 'Every project is unique, tailored to reflect your personal story and vision.',
-    icon: '💎',
-  },
-]
+const fallbackWork = [{ title: 'The Mehta wedding', location: 'Jaipur, 2024', thumbnailUrl: '', className: 'photo-one' }, { title: 'A summer in Goa', location: 'Goa, 2024', thumbnailUrl: '', className: 'photo-two' }, { title: 'The in-between', location: 'Udaipur, 2023', thumbnailUrl: '', className: 'photo-three' }]
 
 export function LandingFeatures() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { data: portfolio } = usePortfolio()
+  const { data } = useHomeContent()
+  const content = { ...defaultHomeContent, ...data }
+  const work = (portfolio || []).filter((item) => item.featured).sort((a, b) => a.order - b.order).slice(0, 3)
+  const selectedWork = work.length ? work : fallbackWork
 
-  return (
-    <section ref={ref} className="py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-            Why Choose <span className="text-gradient">Utsavam</span>?
-          </h2>
-          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            We blend traditional values with modern cinematic techniques
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              className="glass rounded-lg p-6 hover:border-secondary transition-colors"
-            >
-              <div className="text-4xl mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2 text-foreground">
-                {feature.title}
-              </h3>
-              <p className="text-foreground/70">{feature.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
+  return <>
+    <section className="manifesto section-pad"><div className="section-kicker">{content.manifestoKicker}</div><div className="manifesto-content"><h2>{content.manifestoTitle}<br /><em>{content.manifestoAccent}</em></h2><div className="manifesto-copy"><p>{content.manifestoDescription}</p><Link href="/about" className="arrow-link">Our approach <span>↗</span></Link></div></div></section>
+    <section className="image-break" aria-label="A wedding moment"><div className="image-break-photo" /><div className="image-caption">{content.imageCaption[0]}<br />{content.imageCaption[1]}</div></section>
+    <section className="process section-pad" id="process"><div className="section-kicker">{content.processKicker}</div><div className="process-heading"><h2>{content.processTitle}<br /><em>{content.processAccent}</em></h2><p>{content.processDescription}</p></div><div className="step-list">{content.processSteps.map(({ number, title, description }) => <motion.div className="step" key={number} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 20 }} viewport={{ once: true }}><span className="step-number">{number}</span><h3>{title}</h3><p>{description}</p><span className="step-arrow">↗</span></motion.div>)}</div></section>
+    <section className="work-section section-pad" id="work"><div className="work-top"><div className="section-kicker">{content.workKicker}</div><Link href="/portfolio" className="arrow-link">{content.workLinkLabel} <span>↗</span></Link></div><div className="work-grid">{selectedWork.map((item, index) => <Link href="/portfolio" className={`work-card ${index === 0 ? 'work-card-tall' : ''}`} key={item.title}><div className={`work-photo ${'className' in item ? item.className : ''}`} style={'thumbnailUrl' in item && item.thumbnailUrl ? { backgroundImage: `url(${item.thumbnailUrl})` } : undefined} /><div className="work-label"><span>{String(index + 1).padStart(2, '0')} / {item.title}</span><span>{'location' in item ? item.location : item.category} ↗</span></div></Link>)}</div></section>
+    <section className="quote-section section-pad"><p className="quote">“{content.quote}”</p><span>{content.quoteAuthor}</span></section>
+  </>
 }

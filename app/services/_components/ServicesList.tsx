@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useServices } from '../_hooks/useServices'
 import { Button } from '@/shared/components/Button'
 import Link from 'next/link'
+import { CardSkeleton } from '@/shared/components/Skeleton'
 
 export function ServicesList() {
   const { data: services, isLoading } = useServices()
@@ -11,12 +12,7 @@ export function ServicesList() {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {[...Array(3)].map((_, i) => (
-          <div
-            key={i}
-            className="glass rounded-lg p-8 h-96 animate-pulse"
-          />
-        ))}
+        {[...Array(3)].map((_, i) => <CardSkeleton key={i} className="service-card-skeleton" />)}
       </div>
     )
   }

@@ -1,89 +1,23 @@
-"use client";
+'use client'
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
-import Image from "next/image";
+import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
+import gsap from 'gsap/dist/gsap'
 
-interface IntroAnimationProps {
-  onComplete: () => void;
-}
+interface IntroAnimationProps { onComplete: () => void }
 
 export function IntroAnimation({ onComplete }: IntroAnimationProps) {
+  const root = useRef<HTMLDivElement>(null)
+  const [progress, setProgress] = useState(0)
+
   useEffect(() => {
-    const timer = setTimeout(onComplete, 2800);
-    return () => clearTimeout(timer);
-  }, [onComplete]);
+    const progressTween = gsap.to({ value: 0 }, { value: 100, duration: .55, ease: 'power2.out', onUpdate() { setProgress(Math.round(this.targets()[0].value)) } })
+    const exitTimer = window.setTimeout(() => {
+      if (!root.current) return
+      gsap.timeline({ onComplete }).to(root.current.querySelector('.preloader-percent'), { opacity: 0, y: -10, duration: .16, ease: 'power2.in' }).to(root.current.querySelector('.preloader-title'), { opacity: 1, y: 0, scale: 1, duration: .4, ease: 'power3.out' }, '<').to(root.current.querySelector('.preloader-panel-left'), { xPercent: -100, duration: .6, ease: 'power3.inOut' }, '+=.12').to(root.current.querySelector('.preloader-panel-right'), { xPercent: 100, duration: .6, ease: 'power3.inOut' }, '<')
+    }, 650)
+    return () => { progressTween.kill(); window.clearTimeout(exitTimer) }
+  }, [onComplete])
 
-  return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-[9999] bg-background"
-        initial={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        {/* ================= FEATHER SVG ================= */}
-        <motion.div
-          className="fixed left-1/2 top-1/2 z-[10000] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-          initial={{ opacity: 0, scale: 0.9, x: 0, y: 0 }}
-          animate={{
-            opacity: [0, 1, 1, 0],
-            scale: [0.9, 1, 0.3],
-            x: [0, 0, -520],
-            y: [0, -80, -320],
-          }}
-          transition={{
-            duration: 1.8,
-            ease: "easeInOut",
-            times: [0, 0.6, 1],
-          }}
-        >
-          <motion.div
-            animate={{ rotate: [0, 5, -4, 0] }}
-            transition={{ duration: 1.4, ease: "easeInOut" }}
-          >
-            <Image
-              src="/goldenFeather.png"
-              alt="Golden Feather"
-              width={160}
-              height={480}
-              priority
-            />
-          </motion.div>
-        </motion.div>
-
-        {/* ================= CURTAINS ================= */}
-        <motion.div
-          className="absolute top-0 left-0 h-full w-1/2 bg-background z-20"
-          initial={{ x: 0 }}
-          animate={{ x: "-100%" }}
-          transition={{ delay: 0.2, duration: 1.1, ease: [0.25, 0.1, 0.25, 1] }}
-        />
-        <motion.div
-          className="absolute top-0 right-0 h-full w-1/2 bg-background z-20"
-          initial={{ x: 0 }}
-          animate={{ x: "100%" }}
-          transition={{ delay: 0.2, duration: 1.1, ease: [0.25, 0.1, 0.25, 1] }}
-        />
-
-        {/* ================= LOGO ================= */}
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 1.2 }}
-            animate={{ opacity: [0, 1, 1, 0], scale: [1.2, 1, 1, 0.9] }}
-            transition={{
-              duration: 2.2,
-              ease: "easeInOut",
-              times: [0, 0.3, 0.8, 1],
-            }}
-            className="text-center"
-          >
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold text-gradient">
-              UTSAVAM
-            </h1>
-          </motion.div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
-  );
+  return <div ref={root} className="preloader"><div className="preloader-panel preloader-panel-left" /><div className="preloader-panel preloader-panel-right" /><div className="preloader-content"><p className="preloader-label">LOADING FILM</p><p className="preloader-percent">{String(progress).padStart(2, '0')}</p><div className="preloader-title"><Image src="/goldenFeather.png" alt="Utsavam" width={28} height={52} /><span>UTSAVAM</span></div></div></div>
 }

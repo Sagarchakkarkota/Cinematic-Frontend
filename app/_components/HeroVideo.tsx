@@ -1,86 +1,75 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { useHeroMedia } from "../_hooks/useHeroMedia";
 
 export function HeroVideo() {
   const { data: media, isLoading } = useHeroMedia();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const activeMedia = (media || [])
+    .filter((item) => item.isActive)
+    .sort((a, b) => a.order - b.order);
+  const heroVideo = activeMedia.find((item) => item.type === "video");
 
-  const heroVideo = media?.find((m) => m.type === "video" && m.isActive);
-  const fallbackImage = media?.find((m) => m.type === "image" && m.isActive);
-
-  // 🔑 MOBILE AUTOPLAY + LOOP SAFETY
   useEffect(() => {
+    setVideoFailed(false);
+    setIsVisible(false);
     const video = videoRef.current;
     if (!video) return;
 
-    // Force attributes (important for iOS)
-    video.muted = true;
-    video.playsInline = true;
-    video.loop = true;
-    video.autoplay = true;
+    const playVideo = () => {
+      video.muted = true;
+      video.playsInline = true;
+      video.loop = true;
+      video.play().catch(() => undefined);
+    };
 
-    // Try playing (mobile may block silently)
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Autoplay blocked — poster image will remain visible
-      });
-    }
-  }, [heroVideo]);
+    const pauseVideo = () => {
+      video.pause();
+    };
 
-  // Loading skeleton
-  if (isLoading) {
-    return (
-      <div className="absolute inset-0 z-0 bg-muted animate-pulse">
-        <div className="w-full h-full bg-primary/20" />
-      </div>
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          playVideo();
+        } else {
+          pauseVideo();
+        }
+      },
+      { threshold: 0.15 },
     );
-  }
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [heroVideo?.url]);
+
+  if (isLoading)
+    return (
+      <div className="hero-media hero-media-skeleton" aria-hidden="true" />
+    );
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden">
-      {/* Cinematic dark overlay */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-
-      <AnimatePresence mode="wait">
-        {/* 🎥 HERO VIDEO */}
-        {heroVideo ? (
-          <motion.video
-            key="hero-video"
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            muted
-            playsInline
-            loop
-            autoPlay
-            preload="metadata"
-            poster={fallbackImage?.url}
-          >
-            <source src={heroVideo.url} type="video/mp4" />
-          </motion.video>
-        ) : fallbackImage ? (
-          /* 🖼 IMAGE FALLBACK */
-          <motion.div
-            key="hero-image"
-            className="absolute inset-0 w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${fallbackImage.url})` }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-          />
-        ) : (
-          /* 🎭 FINAL SAFE FALLBACK */
-          <div className="absolute inset-0 bg-primary/30" />
-        )}
-      </AnimatePresence>
+    <div className="hero-media" aria-label="Utsavam showreel background">
+      {heroVideo && !videoFailed ? (
+        <video
+          key={heroVideo._id}
+          onError={() => setVideoFailed(true)}
+          onCanPlay={() => setIsVisible(true)}
+          ref={videoRef}
+          className={`hero-media-fill ${isVisible ? "is-visible" : ""}`}
+          muted
+          playsInline
+          loop
+          autoPlay
+          preload="metadata"
+        >
+          <source src={heroVideo.url} />
+        </video>
+      ) : (
+        <div className="hero-media-skeleton" aria-hidden="true" />
+      )}
     </div>
   );
 }

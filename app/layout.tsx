@@ -1,24 +1,15 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/shared/providers/Providers'
 import { Navigation } from '@/shared/components/Navigation'
 import { ConditionalFooter } from '@/shared/components/ConditionalFooter'
 import { IntroWrapper } from '@/shared/components/IntroWrapper'
-
-const inter = Inter({ 
-  subsets: ['latin'],
-  variable: '--font-sans',
-})
-
-const playfair = Playfair_Display({ 
-  subsets: ['latin'],
-  variable: '--font-serif',
-})
+import { CinematicLayer } from '@/app/_components/CinematicLayer'
 
 export const metadata: Metadata = {
   title: 'Utsavam - Premium Cinematography',
   description: 'Royal, cultural, and cinematic wedding cinematography',
+  icons: { icon: '/goldenFeather.png' },
 }
 
 export default function RootLayout({
@@ -27,12 +18,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en">
       <body>
         <Providers>
           <IntroWrapper>
             <Navigation />
-            <main className="min-h-screen">
+            <CinematicLayer />
+            <main>
               {children}
             </main>
             <ConditionalFooter />

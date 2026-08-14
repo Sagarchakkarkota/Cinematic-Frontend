@@ -1,13 +1,11 @@
 import { LandingHero } from './_components/LandingHero'
-import { LandingFeatures } from './_components/LandingFeatures'
-import { LandingCta } from './_components/LandingCta'
+import { CinematicHome } from './_components/CinematicHome'
 
 export default function HomePage() {
   return (
     <>
       <LandingHero />
-      <LandingFeatures />
-      <LandingCta />
+      <CinematicHome />
     </>
   )
 }
