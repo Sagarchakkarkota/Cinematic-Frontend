@@ -198,12 +198,26 @@ button {
   content-visibility: auto;
   contain-intrinsic-size: 260px 320px;
 }
-.portfolio-tile-0 { grid-column: span 2; grid-row: span 2; }
-.portfolio-tile-1 { grid-row: span 3; }
-.portfolio-tile-2 { grid-row: span 2; }
-.portfolio-tile-3 { grid-row: span 2; }
-.portfolio-tile-4 { grid-column: span 2; grid-row: span 2; }
-.portfolio-tile-5 { grid-row: span 2; }
+.portfolio-tile-0 {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+.portfolio-tile-1 {
+  grid-row: span 3;
+}
+.portfolio-tile-2 {
+  grid-row: span 2;
+}
+.portfolio-tile-3 {
+  grid-row: span 2;
+}
+.portfolio-tile-4 {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+.portfolio-tile-5 {
+  grid-row: span 2;
+}
 .portfolio-tile-image,
 .portfolio-image-skeleton,
 .portfolio-image-fallback {
@@ -216,11 +230,19 @@ button {
   object-fit: cover;
   opacity: 0;
   transform: scale(1.015);
-  transition: opacity .35s ease, transform .6s ease;
-  filter: saturate(.75);
+  transition:
+    opacity 0.35s ease,
+    transform 0.6s ease;
+  filter: saturate(0.75);
 }
-.portfolio-tile-image.is-loaded { opacity: 1; transform: scale(1); }
-.portfolio-tile:hover .portfolio-tile-image.is-loaded { transform: scale(1.04); filter: saturate(1); }
+.portfolio-tile-image.is-loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+.portfolio-tile:hover .portfolio-tile-image.is-loaded {
+  transform: scale(1.04);
+  filter: saturate(1);
+}
 .portfolio-image-skeleton {
   background: linear-gradient(110deg, #2a2924 8%, #3a3932 18%, #2a2924 33%);
   background-size: 200% 100%;
@@ -232,7 +254,7 @@ button {
   color: var(--muted);
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
 }
 @media (max-width: 700px) {
   .portfolio-collage {
@@ -240,7 +262,9 @@ button {
     grid-auto-rows: minmax(150px, 42vw);
   }
   .portfolio-tile-0,
-  .portfolio-tile-4 { grid-column: span 2; }
+  .portfolio-tile-4 {
+    grid-column: span 2;
+  }
 }
 .hero-media-fill.is-visible {
   opacity: 1;
@@ -298,20 +322,21 @@ h1,
 h2,
 h3 {
   font:
-    400 clamp(54px, 8vw, 126px)/0.88 var(--font-serif),
+    500 clamp(54px, 8vw, 126px)/0.88 var(--font-serif),
     Georgia,
     serif;
-  letter-spacing: -0.065em;
+  letter-spacing: -0.07em;
   margin: 0;
 }
 
 h2 {
-  letter-spacing: -0.06em;
+  letter-spacing: -0.055em;
 }
 
 h3 {
   font-size: clamp(24px, 2vw, 38px);
   line-height: 1.05;
+  letter-spacing: -0.06em;
 }
 h1 em,
 h2 em {
@@ -334,11 +359,12 @@ h2 em {
   display: inline-flex;
   align-items: center;
   gap: 22px;
-  padding: 14px 18px;
+  padding: 14px 20px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   font-size: 10px;
   border: 1px solid transparent;
+  border-radius: 999px;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
@@ -346,7 +372,7 @@ h2 em {
     border-color 0.2s ease;
 }
 .button:hover {
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
 }
 .button-light {
   color: var(--ink);
@@ -622,10 +648,10 @@ h2 em {
 .site-footer {
   background: var(--ink);
   color: var(--paper);
-  padding: 70px 8vw 28px;
+  padding: clamp(56px, 7vw, 90px) clamp(24px, 6vw, 8vw) 28px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: clamp(40px, 6vw, 80px);
 }
 .footer-brand {
   font:
@@ -651,12 +677,13 @@ h2 em {
 .footer-bottom {
   grid-column: 1 / -1;
   border-top: 1px solid rgba(233, 230, 223, 0.2);
-  padding-top: 17px;
+  padding-top: 18px;
+  margin-top: 6px;
   display: flex;
   justify-content: space-between;
   color: rgba(233, 230, 223, 0.5);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   font-size: 9px;
 }
 .film-grain {
