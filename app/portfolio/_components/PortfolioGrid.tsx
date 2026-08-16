@@ -31,7 +31,7 @@ export function PortfolioGrid() {
   return (
     <>
       {/* 🔲 GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="portfolio-collage" aria-label="Portfolio gallery">
         {items.map((item, index) => (
           <motion.div
             key={item._id}
@@ -39,17 +39,12 @@ export function PortfolioGrid() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.08 }}
             onClick={() => setSelectedItem(item)}
-            className="group cursor-pointer"
+            className={`portfolio-tile portfolio-tile-${index % 6} group cursor-pointer`}
           >
-            <div className="relative bg-muted rounded-lg overflow-hidden border border-border hover:border-secondary transition-colors">
+            <div className="relative h-full bg-muted rounded-lg overflow-hidden border border-border hover:border-secondary transition-colors">
               {/* 🖼️ Thumbnail */}
               {item.thumbnailUrl ? (
-                <img
-                  src={item.thumbnailUrl}
-                  alt={item.title}
-                  className="w-full h-auto object-cover"
-                  loading="lazy"
-                />
+                <LazyPortfolioImage src={item.thumbnailUrl} alt={item.title} />
               ) : (
                 <div className="w-full h-[300px] flex items-center justify-center bg-primary/20">
                   <svg
@@ -118,6 +113,32 @@ export function PortfolioGrid() {
           </div>
         )}
       </Modal>
+    </>
+  );
+}
+
+function LazyPortfolioImage({ src, alt }: { src: string; alt: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <>
+      {!loaded && !failed && <span className="portfolio-image-skeleton" aria-hidden="true" />}
+      {failed ? (
+        <div className="portfolio-image-fallback" aria-label="Image unavailable">Image unavailable</div>
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          width={1200}
+          height={900}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+          className={`portfolio-tile-image ${loaded ? "is-loaded" : ""}`}
+        />
+      )}
     </>
   );
 }

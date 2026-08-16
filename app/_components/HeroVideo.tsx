@@ -8,12 +8,20 @@ export function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoFailed, setVideoFailed] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [canLoadVideo, setCanLoadVideo] = useState(true);
   const activeMedia = (media || [])
     .filter((item) => item.isActive)
     .sort((a, b) => a.order - b.order);
   const heroVideo = activeMedia.find((item) => item.type === "video");
+  const heroPoster = activeMedia.find((item) => item.type === "image")?.url;
 
   useEffect(() => {
+    const connection = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }
+    ).connection;
+    setCanLoadVideo(!connection?.saveData && connection?.effectiveType !== "2g");
     setVideoFailed(false);
     setIsVisible(false);
     const video = videoRef.current;
@@ -38,11 +46,18 @@ export function HeroVideo() {
           pauseVideo();
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.05, rootMargin: "120px 0px" },
     );
 
     observer.observe(video);
-    return () => observer.disconnect();
+    const handleVisibility = () => {
+      if (document.hidden) pauseVideo();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, [heroVideo?.url]);
 
   if (isLoading)
@@ -52,7 +67,7 @@ export function HeroVideo() {
 
   return (
     <div className="hero-media" aria-label="Utsavam showreel background">
-      {heroVideo && !videoFailed ? (
+      {heroVideo && !videoFailed && canLoadVideo ? (
         <video
           key={heroVideo._id}
           onError={() => setVideoFailed(true)}
@@ -62,8 +77,8 @@ export function HeroVideo() {
           muted
           playsInline
           loop
-          autoPlay
-          preload="metadata"
+          poster={heroPoster}
+          preload="none"
         >
           <source src={heroVideo.url} />
         </video>
