@@ -34,6 +34,27 @@ a {
 button {
   font: inherit;
 }
+
+@layer utilities {
+  .pulse-surface {
+    @apply animate-pulse rounded-md bg-zinc-800/70;
+  }
+
+  .lazy-panel {
+    content-visibility: auto;
+    contain-intrinsic-size: 600px 720px;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
 .site-nav {
   position: absolute;
   z-index: 30;
